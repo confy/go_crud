@@ -1,0 +1,8 @@
+# docker-compose.yml
+version: '3'
+services:
+  go_crud:
+    image: go_crud
+    build: .
+    ports:
+      - "8080:8080"
