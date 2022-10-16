@@ -11,7 +11,7 @@ import (
 
 var db = database.Connect()
 
-func Post(c echo.Context) error {
+func PostData(c echo.Context) error {
 	var data models.Data
 	err := c.Bind(&data)
 	if err != nil {
@@ -22,7 +22,7 @@ func Post(c echo.Context) error {
 	return c.JSON(http.StatusCreated, data)
 }
 
-func Get(c echo.Context) error {
+func GetData(c echo.Context) error {
 	id := c.Param("id")
 	var data models.Data
 	db.First(&data, id)
@@ -32,7 +32,7 @@ func Get(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func Put(c echo.Context) error {
+func PutData(c echo.Context) error {
 	id := c.Param("id")
 	id_uint, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
@@ -49,7 +49,7 @@ func Put(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func Delete(c echo.Context) error {
+func DeleteData(c echo.Context) error {
 	//with error handling
 	id := c.Param("id")
 	var data models.Data
@@ -59,4 +59,18 @@ func Delete(c echo.Context) error {
 	}
 	db.Delete(&data)
 	return c.NoContent(http.StatusNoContent)
+}
+
+func GetAverage(c echo.Context) error {
+  items := []models.Data{}
+  db.Find(&items)
+  var sum uint
+  for _, item := range items {
+    sum += item.Value
+  }
+  length := uint(len(items))
+  average := sum / length
+  res := map[string]uint{"average": average, "length": length}
+  return c.JSON(http.StatusOK, res)
+
 }
