@@ -1,5 +1,5 @@
 # go_crud
-simple crud API with echo and gorm
+simple crud API with [echo](https://pkg.go.dev/github.com/labstack/echo/v4) and [gorm](https://pkg.go.dev/gorm.io/gorm)
 
 ## Model
     
