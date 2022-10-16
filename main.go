@@ -1,9 +1,9 @@
 package main
 
 import (
+	"go_crud/models"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -11,33 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
-type Data struct {
-	gorm.Model
-	Value string `json:"value"`
-  ID        uint           `gorm:"primaryKey"`
-  CreatedAt time.Time
-  UpdatedAt time.Time
-  DeletedAt gorm.DeletedAt `gorm:"index"`
-}
-
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Database
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-  db.AutoMigrate(&Data{})
+  db.AutoMigrate(&models.Data{})
 
 	// C
 	e.POST("/data", func(c echo.Context) error {
-    var data Data
+    var data models.Data
     err := c.Bind(&data); if err != nil {
       return err
     }
@@ -49,7 +36,7 @@ func main() {
 	// R
 	e.GET("/data/:id", func(c echo.Context) error {
 		id := c.Param("id")
-		var data Data
+		var data models.Data
 		db.First(&data, id)
 		e.Logger.Info("GET /data/%s", id)
 		return c.JSON(http.StatusOK, data)
@@ -63,7 +50,7 @@ func main() {
       return c.JSON(http.StatusBadRequest, "Invalid ID")
     }
 
-		var data Data
+		var data models.Data
     data.ID = uint(id_uint)
 		db.First(&data, id)
 		if err := c.Bind(&data); err != nil {
@@ -78,7 +65,7 @@ func main() {
 	e.DELETE("/data/:id", func(c echo.Context) error {
 		//with error handling
     		id := c.Param("id")
-		var data Data
+		var data models.Data
 		db.First(&data, id)
 		if data.ID == 0 {
 			return echo.NewHTTPError(http.StatusNotFound, "Data not found")
