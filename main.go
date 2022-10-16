@@ -1,14 +1,13 @@
 package main
 
 import (
+	"go_crud/database"
 	"go_crud/models"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -16,12 +15,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-  db.AutoMigrate(&models.Data{})
-
+  db := database.Connect()
 	// C
 	e.POST("/data", func(c echo.Context) error {
     var data models.Data
