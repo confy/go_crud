@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -56,7 +57,14 @@ func main() {
 	// U
 	e.PUT("/data/:id", func(c echo.Context) error {
 		id := c.Param("id")
+    //convert id string to uint
+    id_uint, err := strconv.ParseUint(id, 10, 64)
+    if err != nil {
+      return c.JSON(http.StatusBadRequest, "Invalid ID")
+    }
+
 		var data Data
+    data.ID = uint(id_uint)
 		db.First(&data, id)
 		if err := c.Bind(&data); err != nil {
 			return err
