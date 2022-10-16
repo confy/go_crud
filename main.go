@@ -12,10 +12,10 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-  e.POST("/data", routes.Post)
-  e.GET("/data/:id", routes.Get)
-  e.PUT("/data/:id", routes.Put)
-  e.DELETE("/data/:id", routes.Delete)
+	e.POST("/data", routes.Post)
+	e.GET("/data/:id", routes.Get)
+	e.PUT("/data/:id", routes.Put)
+	e.DELETE("/data/:id", routes.Delete)
 
-  e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
