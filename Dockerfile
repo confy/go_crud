@@ -1,16 +1,18 @@
-FROM golang:1.17
+FROM golang:1.17-alpine
 
-WORKDIR /app
+RUN apk update && apk add --no-cache gcc musl-dev
 
-COPY go.mod go.sum ./
+WORKDIR $GOPATH/src/github.com/confy/go_crud
+ENV GO111MODULE=on
 
+COPY go.mod ./
+COPY go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN go build -o main .
+RUN go build -o main
 
 EXPOSE 8080
 
-# Command to run the executable
-CMD ["./main"]
+CMD [ "./main" ]
