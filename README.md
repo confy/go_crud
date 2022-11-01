@@ -5,11 +5,9 @@ simple crud API with [echo](https://pkg.go.dev/github.com/labstack/echo/v4) and 
     
 ```go
 type Data struct {
-	gorm.Model
+	Value     uint64 `json:"value"`
 	
-	Value     uint `json:"value"` // All other values are added by gorm
-
-	ID        uint   `gorm:"primaryKey"`
+	ID        uint64   `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -24,3 +22,5 @@ type Data struct {
 ### PUT `/data/:id`
 ### DELETE `/data/:id`
 ### GET `/average`
+
+### GET `/hello`

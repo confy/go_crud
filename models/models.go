@@ -7,9 +7,8 @@ import (
 )
 
 type Data struct {
-	gorm.Model
-	Value     uint `json:"value"`
-	ID        uint   `gorm:"primaryKey"`
+	Value     uint64 `json:"value"`
+	ID        uint64   `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

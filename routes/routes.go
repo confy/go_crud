@@ -9,7 +9,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var db = database.Connect()
+var DB = database.Connect()
+
+func message(message string) map[string]string {
+	return map[string]string{"message": message}
+}
+
 
 func PostData(c echo.Context) error {
 	var data models.Data
@@ -18,59 +23,65 @@ func PostData(c echo.Context) error {
 		return err
 	}
 
-	db.Create(&data)
+	DB.Create(&data)
 	return c.JSON(http.StatusCreated, data)
 }
 
 func GetData(c echo.Context) error {
 	id := c.Param("id")
 	var data models.Data
-	db.First(&data, id)
-	if data.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Data not found")
+	DB.First(&data, id)
+	if data.ID == 0 { // Gorm returns id 0 if not found
+		return echo.NewHTTPError(http.StatusNotFound, message("Data not found"))
 	}
 	return c.JSON(http.StatusOK, data)
 }
 
 func PutData(c echo.Context) error {
 	id := c.Param("id")
-	id_uint, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid ID")
-	}
-
 	var data models.Data
-	data.ID = uint(id_uint)
-	db.First(&data, id)
-	if err := c.Bind(&data); err != nil {
+	DB.First(&data, id)
+	if data.ID == 0 {
+		return echo.NewHTTPError(http.StatusNotFound, message("Data not found"))
+	}
+	id_uint, err := strconv.ParseUint(id, 10, 64)
+	data.ID = id_uint
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, message("Invalid ID"))
+	}
+	if err := c.Bind(&data); err != nil { // Binds the request body to our data var
 		return err
 	}
-	db.Save(&data)
+	
+	DB.Save(&data)
 	return c.JSON(http.StatusOK, data)
 }
 
 func DeleteData(c echo.Context) error {
-	//with error handling
 	id := c.Param("id")
 	var data models.Data
-	db.First(&data, id)
+	DB.First(&data, id)
 	if data.ID == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Data not found")
+		return echo.NewHTTPError(http.StatusNotFound, message("Data not found"))
 	}
-	db.Delete(&data)
+	DB.Delete(&data)
 	return c.NoContent(http.StatusNoContent)
 }
 
 func GetAverage(c echo.Context) error {
-  items := []models.Data{}
-  db.Find(&items)
-  var sum uint
-  for _, item := range items {
-    sum += item.Value
-  }
-  length := uint(len(items))
-  average := sum / length
-  res := map[string]uint{"average": average, "length": length}
-  return c.JSON(http.StatusOK, res)
-
+	items := []models.Data{}
+	DB.Find(&items)
+	var sum uint64
+	for _, item := range items {
+		sum += item.Value
+	}
+	length := len(items)
+	res := struct {
+		Average float64 `json:"average"`
+		Length int `json:"length"`
+	} {
+		Average: float64(sum) / float64(length),
+		Length: length,
+	}
+	return c.JSON(http.StatusOK, res)
 }
