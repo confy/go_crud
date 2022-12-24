@@ -6,8 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
     - uses: dominikh/staticcheck-action@v1.2.0
       with:
         version: "2022.1.1"
@@ -16,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
+
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
+      
     - name: Build the Docker image
       run: docker build . -t ${{ github.repository }}
 
