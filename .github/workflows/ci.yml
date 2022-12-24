@@ -21,14 +21,14 @@ jobs:
     - name: Build the Docker image
       run: docker build . -t ${{ github.repository }}-${{ github.branch }}-${{ github.sha }}
     
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+    # - name: Login to DockerHub
+    #   uses: docker/login-action@v1
+    #   with:
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: Push the Docker image
-      run: docker push ${{ github.repository }}
+    # - name: Push the Docker image
+    #   run: docker push ${{ github.repository }}
     
 
 
