@@ -5,7 +5,7 @@ jobs:
     name: "StaticCheck Lint"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - uses: dominikh/staticcheck-action@v1.2.0
@@ -15,13 +15,13 @@ jobs:
     name: "Docker Build"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - name: Build the Docker image
       run: docker build . -t ${{ github.repository }}
 
-  
+
   # k6_load_test:
   #   name: k6 Load Test
   #   runs-on: ubuntu-latest
