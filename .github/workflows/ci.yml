@@ -19,7 +19,7 @@ jobs:
       continue-on-error: true
 
     - name: Build the Docker image
-      run: docker build . -t ${{ github.repository }}-${{ github.branch }}-${{ github.sha }}
+      run: docker build . -t ${{ github.repository }}-${{ github.head_ref }}-${{ github.sha }}
     
     # - name: Login to DockerHub
     #   uses: docker/login-action@v1
