@@ -1,8 +1,8 @@
 on: [push]
 
 jobs:
-  ci:
-    name: "Run CI"
+  lint:
+    name: "StaticCheck Lint"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -11,6 +11,17 @@ jobs:
     - uses: dominikh/staticcheck-action@v1.2.0
       with:
         version: "2022.1.1"
+  build:
+    name: "Docker Build"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Build the Docker image
+      run: docker build . -t ${{ github.repository }}
+
+  
   # k6_load_test:
   #   name: k6 Load Test
   #   runs-on: ubuntu-latest
